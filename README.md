@@ -13,7 +13,7 @@ A Python Package for PayJS
 ## 安装
 
 ```bash
-$ pipenv install PayJS
+$ pip install PayJS
 ```
 
 ## 快速开始
