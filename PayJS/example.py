@@ -1,24 +1,3 @@
-# PayJS
-A Python Package for PayJS
-
-## 说明
-
-本项目为 PayJS 的开源 Python SDK，仅支持 Python 3.6 及以上版本，不支持也不打算支持 Python 2，如果您发现此项目在 Python 3.4 及以上版本无法测试通过，请给我提 Issue 或 Pull Request
-
-使用前，您需要在 [PayJS](https://payjs.cn/) 注册一个账号并开通商户。
-
-当前实现了扫码支付与订单查询
-
-
-## 安装
-
-```bash
-$ pipenv install PayJS
-```
-
-## 快速开始
-
-```python
 import os
 from PayJS import PayJS
 
@@ -59,8 +38,3 @@ if s.SUCCESS:
 else:
     print(s.ERROR_MSG)       # 错误信息
     print(s)
-```
-
-## TODO:
-
-+ 校验回调
