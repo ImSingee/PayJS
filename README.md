@@ -6,10 +6,11 @@ A Python Package for PayJS
 本项目为 PayJS 的开源 Python SDK，仅支持 Python 3.4 及以上版本，不支持也不打算支持 Python 2。
 目前此项目在 Python 3.6 及以上版本测试通过，如果您发现有任何问题，欢迎给我提 Issue 或 Pull Request。
 
-使用前，您需要在 [PayJS](https://payjs.cn/) 注册一个账号并开通商户。
+使用前，您需要在 [PayJS](https://payjs.cn/ref/WDQGQD) 注册一个账号并开通商户。
 
 当前实现了扫码支付、收银台支付与订单查询
 
+> 以上的 **PayJS** 链接为我的 aff 链接，目前 PayJS 只能通过邀请开通商户；如果介意请点此访问：[PayJS (no aff)](https://payjs.cn)
 
 ## 安装
 
