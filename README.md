@@ -3,11 +3,12 @@ A Python Package for PayJS
 
 ## 说明
 
-本项目为 PayJS 的开源 Python SDK，仅支持 Python 3.6 及以上版本，不支持也不打算支持 Python 2，如果您发现此项目在 Python 3.4 及以上版本无法测试通过，请给我提 Issue 或 Pull Request
+本项目为 PayJS 的开源 Python SDK，仅支持 Python 3.4 及以上版本，不支持也不打算支持 Python 2。
+目前此项目在 Python 3.6 及以上版本测试通过，如果您发现有任何问题，欢迎给我提 Issue 或 Pull Request。
 
 使用前，您需要在 [PayJS](https://payjs.cn/) 注册一个账号并开通商户。
 
-当前实现了扫码支付与订单查询
+当前实现了扫码支付、收银台支付与订单查询
 
 
 ## 安装
@@ -61,6 +62,22 @@ else:
     print(s)
 ```
 
+## 更多
+
+我在代码中写了相当详细的注释，如果您想要使用超出上面「快速开始」部分的功能，请阅读代码。
+
+如果您希望帮助我完善文档，也欢迎联系我。
+
 ## TODO:
 
 + 校验回调
+
+## 修正历史
+
++ v0.9   : A 初稿完成
++ v0.9.2 : A 按照文档添加了收银台支付失败；M 修正了请求错误机制；M 在返回错误的情况下忽略签名
+
+## 联系我
+
++ Email：imsingee@gmail.com
++ 其他：本 repo 的 Issue

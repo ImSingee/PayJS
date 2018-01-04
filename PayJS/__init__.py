@@ -97,7 +97,7 @@ class PayJS:
         :return: 一个 PayJSResult 元素（Success 或 Fail）
         """
         if response.status_code == 200:
-            # 扫码支付 与 订单查询
+            # 扫码支付 与 订单查询；收银台支付失败
             try:
                 j = json.loads(response.content)
             except json.JSONDecodeError:
@@ -105,16 +105,15 @@ class PayJS:
             except UnicodeDecodeError:
                 return PayJSResultFail(base=self, raw_response=response, r_json=False)
 
-            if self.sign(j) == j.get('sign'):
-
-                if j.get('msg') or str(j.get('return_code')) == '0':
-                    response = PayJSResultFail(base=self, raw_response=response, r_json=j)
-                else:
-
-                    response = PayJSResultSuccess(base=self, raw_response=response, r_json=j)
-            else:
+            if str(j.get('return_code')) == '0':  # 请求失败
                 response = PayJSResultFail(base=self, raw_response=response, r_json=j)
-                response.ERROR_MSG = '返回的签名错误'
+            else:
+                if self.sign(j) == j.get('sign'):
+                    response = PayJSResultSuccess(base=self, raw_response=response, r_json=j)
+                else:
+                    response = PayJSResultFail(base=self, raw_response=response, r_json=j)
+                    response.ERROR_MSG = '返回的签名错误'
+
         elif response.status_code == 302:
             # 收银台支付
             return PayJSResultSuccess(base=self, raw_response=response, r_json=None)
@@ -279,11 +278,11 @@ class PayJSResultBase(PayJS):
     def __init__(self, base: PayJS, raw_response: requests.Response, r_json: dict = None):
         super(PayJSResultBase, self).__init__(mchid=base.mchid, key=base.key)
 
-        self.raw_response = raw_response             # 原始 requests.Response 数据
-        self.content = raw_response.content          # 原始 response 的 content
-        self.url = raw_response.url                  # 请求的 url
+        self.raw_response = raw_response  # 原始 requests.Response 数据
+        self.content = raw_response.content  # 原始 response 的 content
+        self.url = raw_response.url  # 请求的 url
         self.STATUS_CODE = raw_response.status_code  # HTTP 请求返回的状态吗
-        self.json = r_json                           # 请求返回的内容包装后的 JSON 值（以 dict 存储或为 None/False）
+        self.json = r_json  # 请求返回的内容包装后的 JSON 值（以 dict 存储或为 None/False）
         self.JSON = self.json
 
     def __repr__(self):
@@ -299,8 +298,8 @@ class PayJSResultBase(PayJS):
 class PayJSResultSuccess(PayJSResultBase):
     def __init__(self, raw_response: requests.Response, **kwargs):
         super(PayJSResultSuccess, self).__init__(raw_response=raw_response, **kwargs)
-        self.RESULT = 'SUCCESS'                    # 请求结果（用于输出）
-        self.SUCCESS = True                        # 请求结果（用于判断）
+        self.RESULT = 'SUCCESS'  # 请求结果（用于输出）
+        self.SUCCESS = True  # 请求结果（用于判断）
 
         if type(self.json) is dict:
             for k, v in self.json.items():
@@ -319,10 +318,10 @@ class PayJSResultFail(PayJSResultBase):
 
     def __init__(self, raw_response: requests.Response, **kwargs):
         super(PayJSResultFail, self).__init__(raw_response=raw_response, **kwargs)
-        self.SUCCESS = False                        # 请求结果（用于输出）
-        self.RESULT = 'FAIL'                        # 请求结果（用于判断）
+        self.SUCCESS = False  # 请求结果（用于输出）
+        self.RESULT = 'FAIL'  # 请求结果（用于判断）
         if not self.json:
-            self.ERROR_MSG = '请求失败'              # 错误信息
+            self.ERROR_MSG = '请求失败'  # 错误信息
         else:
             self.ERROR_MSG = self.json.get('msg') or self.json.get('return_msg')
 
