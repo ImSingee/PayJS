@@ -105,14 +105,17 @@ class PayJS:
             except UnicodeDecodeError:
                 return PayJSResultFail(base=self, raw_response=response, r_json=False)
 
-            if str(j.get('return_code')) == '0':  # 请求失败
+            if not self.sign(j) == j.get('sign'):  # 签名错误
                 response = PayJSResultFail(base=self, raw_response=response, r_json=j)
+                response.ERROR_MSG = '返回的签名错误'
             else:
-                if self.sign(j) == j.get('sign'):
-                    response = PayJSResultSuccess(base=self, raw_response=response, r_json=j)
-                else:
+                if str(j.get('return_code')) == '0':  # 请求失败
                     response = PayJSResultFail(base=self, raw_response=response, r_json=j)
-                    response.ERROR_MSG = '返回的签名错误'
+                else:
+                    response = PayJSResultSuccess(base=self, raw_response=response, r_json=j)
+
+
+
 
         elif response.status_code == 302:
             # 收银台支付
@@ -296,6 +299,9 @@ class PayJSResultBase(PayJS):
 
 
 class PayJSResultSuccess(PayJSResultBase):
+    def __bool__(self):
+        return True
+
     def __init__(self, raw_response: requests.Response, **kwargs):
         super(PayJSResultSuccess, self).__init__(raw_response=raw_response, **kwargs)
         self.RESULT = 'SUCCESS'  # 请求结果（用于输出）
@@ -308,13 +314,18 @@ class PayJSResultSuccess(PayJSResultBase):
 
         if '/api/check' in self.url:
             self.PAID = True if getattr(self, 'status') == 1 else False  # 是否已支付
+            self.paid = self.PAID
         if '/api/cashier' in self.url:
             self.REDIRECT = raw_response.headers.get('Location')
+            self.redirect = self.REDIRECT
 
 
 class PayJSResultFail(PayJSResultBase):
     ERROR_NO = 0
     ERROR_MSG = ''
+
+    def __bool__(self):
+        return False
 
     def __init__(self, raw_response: requests.Response, **kwargs):
         super(PayJSResultFail, self).__init__(raw_response=raw_response, **kwargs)
@@ -324,6 +335,7 @@ class PayJSResultFail(PayJSResultBase):
             self.ERROR_MSG = '请求失败'  # 错误信息
         else:
             self.ERROR_MSG = self.json.get('msg') or self.json.get('return_msg')
+        self.error_msg = self.ERROR_MSG
 
 
 if __name__ == '__main__':

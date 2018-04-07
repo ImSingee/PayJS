@@ -33,9 +33,9 @@ AUTHOR = "Brian Wang"
 AUTHOR_EMAIL = "imsingee@gmail.com"
 
 URL = "https://github.com/ImSingee/PayJS"
-DOWNLOAD_URL = "https://github.com/ImSingee/PayJS/archive/0.9.2.tar.gz"
+DOWNLOAD_URL = "https://github.com/ImSingee/PayJS/archive/0.9.3.tar.gz"
 
-VERSION = "0.9.2"
+VERSION = "0.9.3"
 
 LICENSE = "MIT"
 
