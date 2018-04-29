@@ -273,6 +273,33 @@ class PayJS:
         ret = self.request(url, data)
         return ret
 
+    def close(self, payjs_order_id=None):
+        """
+        通过 PayJS 订单号来查询交易状态
+        :param payjs_order_id: PayJS 订单号
+        :return: 返回一个 PayJSResult 成员，当其为 SUCCESS 时存在一个 PAID 属性来表明是否已支付
+        """
+        if not payjs_order_id:
+            payjs_order_id = self.payjs_order_id
+            if not payjs_order_id:
+                raise ValueError('无效的订单号（请确认使用的是 PayJS 订单号）')
+
+        payjs_order_id = str(payjs_order_id)
+
+        if not 1 <= len(payjs_order_id) <= 32:
+            raise ValueError('订单号位数错误（订单号需要在 1 - 32 位）')
+
+        url = r'https://payjs.cn/api/close'
+
+        data = {
+            'payjs_order_id': payjs_order_id,
+        }
+
+        ret = self.request(url, data)
+
+        # return self.request(url, data)
+        return ret
+
     QRPay = native
     CashierPay = cashier
 

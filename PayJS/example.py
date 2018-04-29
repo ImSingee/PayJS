@@ -38,3 +38,12 @@ if s:
 else:
     print(s.error_msg)       # 错误信息
     print(s)
+
+# 订单关闭
+t = p.close(r.payjs_order_id)
+# 或 t = r.close()
+if t:
+    print('Success')
+else:
+    print('Error')
+    print(t.return_msg)

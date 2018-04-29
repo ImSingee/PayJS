@@ -3,7 +3,7 @@ A Python Package for PayJS
 
 ## 说明
 
-本项目为 PayJS 的开源 Python SDK，仅支持 Python 3.4 及以上版本。
+本项目为 PayJS 的开源 Python SDK，仅支持 Python 3.6 及以上版本。
 目前此项目在 Python 3.6 及以上版本测试通过，如果您发现有任何问题，欢迎给我提 Issue 或 Pull Request。
 
 使用前，您需要在 [PayJS](https://payjs.cn/ref/WDQGQD) 注册一个账号并开通商户。
@@ -61,6 +61,15 @@ if s:
 else:
     print(s.error_msg)       # 错误信息
     print(s)
+
+# 订单关闭
+t = p.close(r.payjs_order_id)
+# 或 t = r.close()
+if t:
+    print('Success')
+else:
+    print('Error')
+    print(t.error_msg)
 ```
 
 ## 更多
@@ -78,6 +87,7 @@ else:
 + v0.9   : A 初稿完成
 + v0.9.2 : A 按照文档添加了收银台支付失败；M 修正了请求错误机制；M 在返回错误的情况下忽略签名
 + v0.9.3 : M 简化是否成功判断; M 在返回错误的情况下不再忽略签名 
++ v0.9.4 : A 添加了关闭订单; M 修正 PyPi GBK 编码问题
 
 ## 联系我
 
