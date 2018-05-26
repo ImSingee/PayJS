@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 from setuptools import setup
 
-VERSION = '0.9.4'
-DOWNLOAD_URL = 'https://github.com/ImSingee/PayJS/archive/v0.9.4.tar.gz'
+VERSION = '0.9.5'
+DOWNLOAD_URL = 'https://github.com/ImSingee/PayJS/archive/v0.9.5.tar.gz'
 
 setup(
     name='PayJS',

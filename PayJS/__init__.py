@@ -182,13 +182,14 @@ class PayJS:
         else:
             return False
 
-    def native(self, total_fee: int, out_trade_no, body: str = '', notify_url=None):
+    def native(self, total_fee: int, out_trade_no, body: str = '', notify_url=None, attach=None):
         """
         发起扫码支付
         :param total_fee: 支付金额，单位为分，介于 1 - 1000000 之间
         :param out_trade_no: 订单号，应保证唯一性，1-32 字符
         :param body: （可选）订单标题，0 - 32 字符
         :param notify_url: （可选）回调地址，留空使用默认，传入空字符串代表无需回调
+        :param attach: （可选）用户自定义数据，在notify的时候会原样返回
         :return:
         """
         url = r'https://payjs.cn/api/native'
@@ -219,12 +220,13 @@ class PayJS:
             'out_trade_no': out_trade_no,
             'body': body,
             'notify_url': notify_url,
+            'attach': attach,
         }
 
         ret = self.request(url, data)
         return ret
 
-    def cashier(self, total_fee: int, out_trade_no, body: str = '', notify_url=None, callback_url=None):
+    def cashier(self, total_fee: int, out_trade_no, body: str = '', notify_url=None, callback_url=None, attach=None):
         """
         发起收银台支付
 
@@ -234,6 +236,7 @@ class PayJS:
         :param body: （可选）订单标题，0 - 32 字符
         :param notify_url: （可选）回调地址，留空使用默认，传入空字符串代表无需回调
         :param callback_url: （可选）（暂无效）支付成功后前端跳转地址
+        :param attach: （可选）用户自定义数据，在notify的时候会原样返回
         :return: PayJSResult
         """
         url = r'https://payjs.cn/api/cashier'
@@ -268,6 +271,7 @@ class PayJS:
             'body': body,
             'notify_url': notify_url,
             'callback_url': callback_url,
+            'attach': attach
         }
 
         ret = self.request(url, data)
