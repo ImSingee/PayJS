@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from setuptools import setup
 
-VERSION = '1.0.4'
+VERSION = '1.1.0'
 DOWNLOAD_URL = 'https://github.com/ImSingee/PayJS/archive/v{}.tar.gz'.format(VERSION)
 
 setup(
