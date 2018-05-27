@@ -15,7 +15,7 @@ A Python Package for PayJS
 ## 安装
 
 ```bash
-$ pip install PayJS
+$ pip install payjs
 ```
 
 ## 快速开始
