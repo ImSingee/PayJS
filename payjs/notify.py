@@ -30,7 +30,7 @@ class PayJSNotify:
         else:
             self.paid = False
 
-        self.total_fee = notify['total_fee']
+        self.total_fee = int(notify['total_fee'])
 
         self.payjs_order_id = notify['payjs_order_id']
         self.out_trade_no = notify['out_trade_no']
