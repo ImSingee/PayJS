@@ -22,6 +22,7 @@ $ pip install payjs
 
 ```python
 from payjs import PayJS
+from payjs import PayJSNotify
 
 MCHID = '这里是商户号'
 KEY = '这里是商户密钥'
@@ -68,6 +69,10 @@ if t:
 else:
     print('Error')
     print(t.return_msg)
+
+# 回调验证
+n = PayJSNotify(KEY, '回调内容（str 或 dict）')
+print(n)
 ```
 
 ## 更多
@@ -75,10 +80,6 @@ else:
 我在代码中写了相当详细的注释，如果您想要使用超出上面「快速开始」部分的功能，请阅读代码。
 
 如果您希望帮助我完善文档，也欢迎联系我。
-
-## TODO:
-
-- [ ] 校验回调
 
 ## 修正历史
 

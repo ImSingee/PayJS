@@ -1,6 +1,7 @@
 import logging
 from payjs.sign import check_signature
 from pprint import pformat
+from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
@@ -37,12 +38,13 @@ class PayJSNotify:
 
         self.openid = notify['openid']
         self.attach = notify['attach']
-        self.time_end = notify['time_end']
+
+        try:
+            self.time_end = datetime.strptime(notify['time_end'], '%Y-%m-%d %H:%M:%S')
+        except:
+            self.time_end = notify['time_end']
 
         self.mchid = notify['mchid']
 
-    def __str__(self):
-        return pformat(self.__dict__)
-
     def __repr__(self):
-        return '<PayJSNotify> ({})'.format(', '.join(self.__dict__.keys()))
+        return pformat(self.__dict__)
