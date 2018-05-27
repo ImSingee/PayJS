@@ -1,5 +1,6 @@
 import logging
 from payjs.sign import check_signature
+from pprint import pformat
 
 logger = logging.getLogger(__name__)
 
@@ -12,7 +13,8 @@ class PayJSNotify:
         else:
             notify = dict(notify_content)
 
-        logger.debug(notify)
+        logger.debug('notify: {}'.format(notify))
+
         check_signature(key, notify)
 
         self.mchid = notify['mchid']
@@ -38,3 +40,9 @@ class PayJSNotify:
         self.time_end = notify['time_end']
 
         self.mchid = notify['mchid']
+
+    def __str__(self):
+        return pformat(self.__dict__)
+
+    def __repr__(self):
+        return '<PayJSNotify> ({})'.format(', '.join(self.__dict__.keys()))
