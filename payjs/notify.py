@@ -46,5 +46,24 @@ class PayJSNotify:
 
         self.mchid = notify['mchid']
 
+    def as_dict(self, params=None):
+        if params is None:
+            params = (
+                'mchid', 'paid', 'total_fee', 'payjs_order_id', 'out_trade_no', 'transaction_id', 'openid', 'attach',
+                'time_end'
+            )
+
+        d = {}
+        for param in params:
+            d.setdefault(param, self.__getattribute__(param))
+
+        if 'attach' in d:
+            d['attach'] = str(d['attach'])
+        if 'time_end' in d:
+            if type(self.time_end) is not str:
+                d['time_end'] = self.time_end.strftime('%Y-%m-%d %H:%M:%S')
+
+        return d
+
     def __repr__(self):
         return pformat(self.__dict__)
