@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 from setuptools import setup
 
-VERSION = '0.9.5'
-DOWNLOAD_URL = 'https://github.com/ImSingee/PayJS/archive/v0.9.5.tar.gz'
+VERSION = '1.0.0'
+DOWNLOAD_URL = 'https://github.com/ImSingee/PayJS/archive/v{}.tar.gz'.format(VERSION)
 
 setup(
     name='PayJS',
     version=VERSION,
-    packages=['PayJS'],
+    packages=['payjs'],
     url='https://github.com/ImSingee/PayJS',
     license='MIT',
     author='Brian Wang',
@@ -18,4 +18,7 @@ setup(
     ],
     keywords='python package payjs interface API wechat pay',
     download_url=DOWNLOAD_URL,
+    classifiers=[
+        "Programming Language :: Python :: 3.6",
+    ]
 )

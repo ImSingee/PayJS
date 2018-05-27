@@ -3,7 +3,7 @@ A Python Package for PayJS
 
 ## 说明
 
-本项目为 PayJS 的开源 Python SDK，仅支持 Python 3.6 及以上版本。
+本项目为 PayJS 的开源 Python SDK，**仅支持 Python 3.6 及以上版本**。
 目前此项目在 Python 3.6 及以上版本测试通过，如果您发现有任何问题，欢迎给我提 Issue 或 Pull Request。
 
 使用前，您需要在 [PayJS](https://payjs.cn/ref/WDQGQD) 注册一个账号并开通商户。
@@ -21,11 +21,10 @@ $ pip install PayJS
 ## 快速开始
 
 ```python
-import os
-from PayJS import PayJS
+from payjs import PayJS
 
-MCHID = os.environ.get('MCHID')
-KEY = os.environ.get('KEY')
+MCHID = '这里是商户号'
+KEY = '这里是商户密钥'
 
 # 初始化
 p = PayJS(MCHID, KEY)
@@ -34,8 +33,9 @@ p = PayJS(MCHID, KEY)
 OUT_TRADE_NO = '2017TEST'     # 外部订单号（自己的支付系统的订单号，请保证唯一）
 TOTAL_FEE = 1                 # 支付金额，单位为分，金额最低 0.01 元最多 10000 元
 BODY = '测试支付'              # 订单标题
-r = p.QRPay(out_trade_no=OUT_TRADE_NO, total_fee=TOTAL_FEE, body=BODY)
-if r: # 老版本可继续使用 r.SUCCESS
+ATTACH = 'info'
+r = p.QRPay(out_trade_no=OUT_TRADE_NO, total_fee=TOTAL_FEE, body=BODY, attach=ATTACH)
+if r:
     print(r.code_url)         # 二维码地址（weixin:// 开头，请使用此地址构建二维码）
     print(r.qrcode)           # 二维码地址（https:// 开头，为二维码图片的地址）
     print(r.payjs_order_id)   # 订单号（PAYJS 的）
@@ -54,8 +54,7 @@ else:
     print(c)
 
 # 订单查询
-s = p.check_status(r.payjs_order_id)
-# 或 s = r.check_status()
+s = p.check_status(payjs_order_id=r.payjs_order_id)
 if s:
     print(s.paid)            # 是否已支付
 else:
@@ -64,12 +63,11 @@ else:
 
 # 订单关闭
 t = p.close(r.payjs_order_id)
-# 或 t = r.close()
 if t:
     print('Success')
 else:
     print('Error')
-    print(t.error_msg)
+    print(t.return_msg)
 ```
 
 ## 更多
@@ -89,8 +87,19 @@ else:
 + v0.9.3 : M 简化是否成功判断; M 在返回错误的情况下不再忽略签名 
 + v0.9.4 : A 添加了关闭订单; M 修正 PyPi GBK 编码问题
 + v0.9.5 : A 添加了 attach 支持
++ v1.0.0 : **不向下支持** 全新发布
 
 ## 联系我
 
 + Email：imsingee@gmail.com
 + 其他：本 repo 的 Issue
+
+## v0.9 升级至 v1.0
+
+1. 将 `from PayJs import ...` 改为 `from payjs import ...`
+2. 不要使用 result 进行任何操作（例如查询、关闭订单等）
+3. 使用 `check_status` 时手动指定参数 `payjs_order_id=`
+4. result 的 SUCCESS、ERROR、RESULT 不再可用，请使用 bool() 进行判断状态
+5. 签名错误直接抛出异常
+6. import 时不应再导入任何 Result 类
+7. result 的 `ERROR_MSG` 不再可用，请替换为 `error_msg`

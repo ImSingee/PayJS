@@ -1,5 +1,5 @@
 import os
-from PayJS import PayJS
+from payjs import PayJS
 
 MCHID = os.environ.get('MCHID')
 KEY = os.environ.get('KEY')
@@ -11,8 +11,9 @@ p = PayJS(MCHID, KEY)
 OUT_TRADE_NO = '2017TEST'     # 外部订单号（自己的支付系统的订单号，请保证唯一）
 TOTAL_FEE = 1                 # 支付金额，单位为分，金额最低 0.01 元最多 10000 元
 BODY = '测试支付'              # 订单标题
-r = p.QRPay(out_trade_no=OUT_TRADE_NO, total_fee=TOTAL_FEE, body=BODY)
-if r: # 老版本可继续使用 r.SUCCESS
+ATTACH = 'info'
+r = p.QRPay(out_trade_no=OUT_TRADE_NO, total_fee=TOTAL_FEE, body=BODY, attach=ATTACH)
+if r:
     print(r.code_url)         # 二维码地址（weixin:// 开头，请使用此地址构建二维码）
     print(r.qrcode)           # 二维码地址（https:// 开头，为二维码图片的地址）
     print(r.payjs_order_id)   # 订单号（PAYJS 的）
@@ -31,8 +32,7 @@ else:
     print(c)
 
 # 订单查询
-s = p.check_status(r.payjs_order_id)
-# 或 s = r.check_status()
+s = p.check_status(payjs_order_id=r.payjs_order_id)
 if s:
     print(s.paid)            # 是否已支付
 else:
@@ -41,7 +41,6 @@ else:
 
 # 订单关闭
 t = p.close(r.payjs_order_id)
-# 或 t = r.close()
 if t:
     print('Success')
 else:
