@@ -46,13 +46,18 @@ else:
     print(r.error_msg)        # 错误信息
     print(r)
 
-# 收银台支付
+# 收银台支付（暂不可用，未来可能会升级为可用）
 c = p.CashierPay(out_trade_no=OUT_TRADE_NO, total_fee=TOTAL_FEE, body=BODY)
 if c:
     print(c.redirect)         # 要跳转到的收银台网址
 else:
     print(c.error_msg)        # 错误信息
     print(c)
+
+# 收银台支付（兼容模式，仅构造网址，目前请使用此方案）
+c = p.cashier_legacy(out_trade_no=OUT_TRADE_NO, total_fee=TOTAL_FEE, body=BODY)
+print(c)
+
 
 # 订单查询
 s = p.check_status(payjs_order_id=r.payjs_order_id)
@@ -90,6 +95,7 @@ print(n)
 + v0.9.5 : A 添加了 attach 支持
 + v1.0.0 : **不向下支持** 全新发布
 + v1.1.0 : A 添加了 notify 解析支持
++ v1.1.5 : M 添加了 cashier_legacy 兼容模式
 
 ## 联系我
 

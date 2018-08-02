@@ -3,6 +3,7 @@ import logging
 import requests
 
 from pprint import pformat
+from urllib.parse import urlencode
 
 from payjs.result import PayJSResultSuccess, PayJSResultFail
 from payjs.sign import get_signature, check_signature
@@ -54,7 +55,7 @@ class PayJS:
 
         self.notify_url = notify_url
 
-    def request(self, url: str, data: dict):
+    def request(self, url: str, data: dict, method='POST'):
         """
         处理请求（请求时会过滤值为空的参数）
 
@@ -64,7 +65,11 @@ class PayJS:
         """
         data['sign'] = get_signature(self.key, data)
         data = {k: v for k, v in data.items() if v}
-        r = requests.post(url, data=data, allow_redirects=False)
+        if method == 'GET':
+            r = requests.get(url, params=data, allow_redirects=False)
+        else:
+            r = requests.post(url, data=data, allow_redirects=False)
+
         return self.parse_response(r)
 
     def parse_response(self, raw_response: requests.Response):
@@ -176,9 +181,8 @@ class PayJS:
 
     def cashier(self, total_fee: int, out_trade_no, body: str = '', notify_url=None, callback_url=None, attach=None):
         """
-        发起收银台支付
+        发起收银台支付【未来应该会使用这个接口，现在暂时还不能用】
 
-        注：目前此接口在参数传递错误时并不会有提示，依然会返回一个跳转后的网址
         :param total_fee: 支付金额，单位为分，介于 1 - 1000000 之间
         :param out_trade_no: 订单号，应保证唯一性，1-32 字符
         :param body: （可选）订单标题，0 - 32 字符
@@ -187,12 +191,11 @@ class PayJS:
         :param attach: （可选）用户自定义数据，在notify的时候会原样返回
         :return: PayJSResult
         """
+        logger.warning('此接口目前情况下使用会出问题，请使用 cashier_legacy 直接获取构造出的跳转网址')
         url = r'https://payjs.cn/api/cashier'
 
         if not total_fee > 0:
             raise InvalidInfoException(-2004, "金额必须为正整数（单位为分）")
-        if not total_fee <= 100000:
-            logger.warning("金额可能错误（单笔最高为 1000 元）")
 
         out_trade_no = str(out_trade_no)
 
@@ -222,8 +225,61 @@ class PayJS:
             'attach': attach
         }
 
-        ret = self.request(url, data)
+        ret = self.request(url, data, method='gulp')
         return ret
+
+    def cashier_legacy(self, total_fee: int, out_trade_no, body: str = '', notify_url=None, callback_url=None,
+                       attach=None):
+        """
+        发起收银台支付【Legacy 临时可用】
+
+        【此接口无法判断是否请求成功会直接返回 URL 构造地址】
+
+        :param total_fee: 支付金额，单位为分，介于 1 - 1000000 之间
+        :param out_trade_no: 订单号，应保证唯一性，1-32 字符
+        :param body: （可选）订单标题，0 - 32 字符
+        :param notify_url: （可选）回调地址，留空使用默认，传入空字符串代表无需回调
+        :param callback_url: （可选）（暂无效）支付成功后前端跳转地址
+        :param attach: （可选）用户自定义数据，在notify的时候会原样返回
+        :return: PayJSResult
+        """
+        url = r'https://payjs.cn/api/cashier'
+
+        if not total_fee > 0:
+            raise InvalidInfoException(-2004, "金额必须为正整数（单位为分）")
+
+        out_trade_no = str(out_trade_no)
+
+        if not out_trade_no:
+            logger.warning("用户端订单号不可省略")
+        if not len(out_trade_no) <= 32:
+            logger.warning("用户端订单号最多为 32 位")
+
+        if not len(body) <= 32:
+            logger.warning("标题最多为 32 位")
+
+        if notify_url is None:
+            notify_url = self.notify_url
+        if not check_url(notify_url, force_ssl=self.FORCE_SSL):
+            raise InvalidInfoException(-2003, '通知回调地址有误')
+
+        if not check_url(notify_url, force_ssl=self.FORCE_SSL):
+            raise InvalidInfoException(-2004, '前端跳转地址有误')
+
+        data = {
+            'mchid': self.mchid,
+            'total_fee': total_fee,
+            'out_trade_no': out_trade_no,
+            'body': body,
+            'notify_url': notify_url,
+            'callback_url': callback_url,
+            'attach': attach
+        }
+
+        data['sign'] = get_signature(self.key, data)
+        data = {k: v for k, v in data.items() if v}
+
+        return url + '?' + urlencode(data)
 
     def close(self, payjs_order_id=None):
         """
