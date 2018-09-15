@@ -75,6 +75,14 @@ else:
     print('Error')
     print(t.return_msg)
 
+# 订单退款
+t = p.refund(r.payjs_order_id)
+if t:
+    print('Success')
+else:
+    print('Error')
+    print(t.return_msg)
+
 # 回调验证
 n = PayJSNotify(KEY, '回调内容（str 或 dict）')
 print(n)
@@ -96,6 +104,7 @@ print(n)
 + v1.0.0 : **不向下支持** 全新发布
 + v1.1.0 : A 添加了 notify 解析支持
 + v1.1.5 : M 添加了 cashier_legacy 兼容模式
++ v1.1.6 : A 添加了退款 
 
 ## 联系我
 

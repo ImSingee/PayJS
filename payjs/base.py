@@ -38,15 +38,11 @@ class PayJS:
 
         if type(mchid) is not str:
             raise InvalidInfoException(-2001, "商户号格式必须为字符串")
-        if len(mchid) != 6:
-            logger.warning('商户号可能有误（不是六位）')
 
         self.mchid = mchid
 
         if type(key) is not str:
             raise InvalidInfoException(-2002, "密钥格式必须为字符串")
-        if len(key) != 16:
-            logger.warning('密钥可能有误（不是 16 位）')
 
         self.key = key
 
@@ -306,6 +302,32 @@ class PayJS:
         ret = self.request(url, data)
 
         # return self.request(url, data)
+        return ret
+
+    def refund(self, payjs_order_id=None):
+        """
+        通过 PayJS 订单号退款
+        :param payjs_order_id: PayJS 订单号
+        :return: 返回一个 PayJSResult 成员，当其为 SUCCESS 时存在一个 PAID 属性来表明是否已支付
+        """
+        if not payjs_order_id:
+            payjs_order_id = self.payjs_order_id
+            if not payjs_order_id:
+                raise InvalidInfoException(-2005, '未提供订单号')
+
+        payjs_order_id = str(payjs_order_id)
+
+        if not 1 <= len(payjs_order_id) <= 32:
+            logger.warning('订单号可能错误（位数需要在 1 - 32 位）')
+
+        url = r'https://payjs.cn/api/refund'
+
+        data = {
+            'payjs_order_id': payjs_order_id,
+        }
+
+        ret = self.request(url, data)
+
         return ret
 
     QRPay = native
