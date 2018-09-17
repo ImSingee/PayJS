@@ -145,8 +145,6 @@ class PayJS:
 
         if not total_fee > 0:
             raise InvalidInfoException(-2004, "金额必须为正整数（单位为分）")
-        if not total_fee <= 100000:
-            logger.warning("金额可能错误（单笔最高为 1000 元）")
 
         out_trade_no = str(out_trade_no)
 
@@ -276,6 +274,44 @@ class PayJS:
         data = {k: v for k, v in data.items() if v}
 
         return url + '?' + urlencode(data)
+
+    def micropay(self, total_fee: int, out_trade_no, auth_code, body: str = ''):
+        """
+        发起扫码支付
+        :param total_fee: 支付金额，单位为分，介于 1 - 1000000 之间
+        :param out_trade_no: 订单号，应保证唯一性，1-32 字符
+        :param auth_code: 扫码支付授权码，设备读取用户微信中的条码或者二维码信息，18 位纯数字，以 10、11、12、13、14、15 开头
+        :param body: （可选）订单标题，0 - 32 字符
+        :return:
+        """
+        url = r'https://payjs.cn/api/micropay'
+
+        if not total_fee > 0:
+            raise InvalidInfoException(-2004, "金额必须为正整数（单位为分）")
+
+        out_trade_no = str(out_trade_no)
+
+        if not out_trade_no:
+            logger.warning("用户端订单号不可省略")
+        if not len(out_trade_no) <= 32:
+            logger.warning("用户端订单号最多为 32 位")
+
+        if not len(body) <= 32:
+            logger.warning("标题最多为 32 位")
+
+        if not str(auth_code).isdigit() or not len(str(auth_code)) == 18:
+            logger.warning("扫码支付授权码应为 18 位纯数字")
+
+        data = {
+            'mchid': self.mchid,
+            'total_fee': total_fee,
+            'out_trade_no': out_trade_no,
+            'body': body,
+            'auth_code': auth_code,
+        }
+
+        ret = self.request(url, data)
+        return ret
 
     def close(self, payjs_order_id=None):
         """
