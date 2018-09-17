@@ -58,6 +58,10 @@ else:
 c = p.cashier_legacy(out_trade_no=OUT_TRADE_NO, total_fee=TOTAL_FEE, body=BODY)
 print(c)
 
+# 刷卡支付
+AUTH_CODE = '这里填写用户侧 18 位数字'
+m = p.micropay(out_trade_no=OUT_TRADE_NO, total_fee=TOTAL_FEE, auth_code=AUTH_CODE, body=BODY)
+
 
 # 订单查询
 s = p.check_status(payjs_order_id=r.payjs_order_id)
@@ -105,6 +109,7 @@ print(n)
 + v1.1.0 : A 添加了 notify 解析支持
 + v1.1.5 : M 添加了 cashier_legacy 兼容模式
 + v1.1.6 : A 添加了退款 
++ v1.2.0 : A 添加了刷卡支付
 
 ## 联系我
 
