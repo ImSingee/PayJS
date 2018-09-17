@@ -277,10 +277,10 @@ class PayJS:
 
     def micropay(self, total_fee: int, out_trade_no, auth_code, body: str = ''):
         """
-        发起扫码支付
+        发起刷卡支付
         :param total_fee: 支付金额，单位为分，介于 1 - 1000000 之间
         :param out_trade_no: 订单号，应保证唯一性，1-32 字符
-        :param auth_code: 扫码支付授权码，设备读取用户微信中的条码或者二维码信息，18 位纯数字，以 10、11、12、13、14、15 开头
+        :param auth_code: 刷卡支付授权码，设备读取用户微信中的条码或者二维码信息，18 位纯数字，以 10、11、12、13、14、15 开头
         :param body: （可选）订单标题，0 - 32 字符
         :return:
         """
@@ -300,7 +300,7 @@ class PayJS:
             logger.warning("标题最多为 32 位")
 
         if not str(auth_code).isdigit() or not len(str(auth_code)) == 18:
-            logger.warning("扫码支付授权码应为 18 位纯数字")
+            logger.warning("刷卡支付授权码应为 18 位纯数字")
 
         data = {
             'mchid': self.mchid,
