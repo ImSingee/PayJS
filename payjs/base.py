@@ -368,3 +368,4 @@ class PayJS:
 
     QRPay = native
     CashierPay = cashier
+    MicroPay = micropay

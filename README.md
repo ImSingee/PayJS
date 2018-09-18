@@ -60,7 +60,7 @@ print(c)
 
 # 刷卡支付
 AUTH_CODE = '这里填写用户侧 18 位数字'
-m = p.micropay(out_trade_no=OUT_TRADE_NO, total_fee=TOTAL_FEE, auth_code=AUTH_CODE, body=BODY)
+m = p.MicroPay(out_trade_no=OUT_TRADE_NO, total_fee=TOTAL_FEE, auth_code=AUTH_CODE, body=BODY)
 print(m)
 
 # 订单查询
