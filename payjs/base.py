@@ -181,7 +181,7 @@ class PayJS:
         :param out_trade_no: 订单号，应保证唯一性，1-32 字符
         :param body: （可选）订单标题，0 - 32 字符
         :param notify_url: （可选）回调地址，留空使用默认，传入空字符串代表无需回调
-        :param callback_url: （可选）（暂无效）支付成功后前端跳转地址
+        :param callback_url: （可选）支付成功后前端跳转地址
         :param attach: （可选）用户自定义数据，在notify的时候会原样返回
         :return: PayJSResult
         """
@@ -206,7 +206,7 @@ class PayJS:
         if not check_url(notify_url, force_ssl=self.FORCE_SSL):
             raise InvalidInfoException(-2003, '通知回调地址有误')
 
-        if not check_url(notify_url, force_ssl=self.FORCE_SSL):
+        if not check_url(callback_url, force_ssl=self.FORCE_SSL):
             raise InvalidInfoException(-2004, '前端跳转地址有误')
 
         data = {
@@ -233,7 +233,7 @@ class PayJS:
         :param out_trade_no: 订单号，应保证唯一性，1-32 字符
         :param body: （可选）订单标题，0 - 32 字符
         :param notify_url: （可选）回调地址，留空使用默认，传入空字符串代表无需回调
-        :param callback_url: （可选）（暂无效）支付成功后前端跳转地址
+        :param callback_url: （可选）支付成功后前端跳转地址
         :param attach: （可选）用户自定义数据，在notify的时候会原样返回
         :return: PayJSResult
         """
@@ -257,7 +257,7 @@ class PayJS:
         if not check_url(notify_url, force_ssl=self.FORCE_SSL):
             raise InvalidInfoException(-2003, '通知回调地址有误')
 
-        if not check_url(notify_url, force_ssl=self.FORCE_SSL):
+        if not check_url(callback_url, force_ssl=self.FORCE_SSL):
             raise InvalidInfoException(-2004, '前端跳转地址有误')
 
         data = {
@@ -365,6 +365,28 @@ class PayJS:
         ret = self.request(url, data)
 
         return ret
+
+    def get_openid(self, callback_url):
+        """
+        获取 OpenID
+
+        会返回一个构造的 url，直接通过浏览器跳转该 url 即可；在微信环境下，微信浏览器会自动跳转至 callback_url，并携带名称为 openid 的查询参数
+
+        :param callback_url: 支付成功后前端跳转地址
+        :return: PayJSResult
+        """
+        url = r'https://payjs.cn/api/openid'
+
+        if not check_url(callback_url, force_ssl=self.FORCE_SSL):
+            raise InvalidInfoException(-2004, '前端跳转地址有误')
+
+        data = {
+            'callback_url': callback_url,
+        }
+
+        # data = {k: v for k, v in data.items() if v}
+
+        return url + '?' + urlencode(data)
 
     QRPay = native
     CashierPay = cashier

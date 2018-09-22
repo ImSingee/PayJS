@@ -31,11 +31,12 @@ KEY = '这里是商户密钥'
 p = PayJS(MCHID, KEY)
 
 # 扫码支付
-OUT_TRADE_NO = '2017TEST'     # 外部订单号（自己的支付系统的订单号，请保证唯一）
-TOTAL_FEE = 1                 # 支付金额，单位为分，金额最低 0.01 元最多 10000 元
-BODY = '测试支付'              # 订单标题
-ATTACH = 'info'
-r = p.QRPay(out_trade_no=OUT_TRADE_NO, total_fee=TOTAL_FEE, body=BODY, attach=ATTACH)
+OUT_TRADE_NO = '2017TEST' # 外部订单号（自己的支付系统的订单号，请保证唯一）
+TOTAL_FEE = 1 # 支付金额，单位为分，金额最低 0.01 元最多 10000 元
+BODY = '测试支付' # 订单标题
+NOTIFY_URL = 'https://pay.singee.site/empty/' # Notify 网址
+ATTACH = 'info' # Notify 内容
+r = p.QRPay(out_trade_no=OUT_TRADE_NO, total_fee=TOTAL_FEE, body=BODY, notify_url=NOTIFY_URL, attach=ATTACH)
 if r:
     print(r.code_url)         # 二维码地址（weixin:// 开头，请使用此地址构建二维码）
     print(r.qrcode)           # 二维码地址（https:// 开头，为二维码图片的地址）
@@ -47,7 +48,8 @@ else:
     print(r)
 
 # 收银台支付（暂不可用，未来可能会升级为可用）
-c = p.CashierPay(out_trade_no=OUT_TRADE_NO, total_fee=TOTAL_FEE, body=BODY)
+CALLBACK_URL = 'https://pay.singee.site/empty/' # 跳转网址
+c = p.CashierPay(out_trade_no=OUT_TRADE_NO, total_fee=TOTAL_FEE, body=BODY, callback_url=CALLBACK_URL, notify_url=NOTIFY_URL, attach=ATTACH)
 if c:
     print(c.redirect)         # 要跳转到的收银台网址
 else:
@@ -55,7 +57,7 @@ else:
     print(c)
 
 # 收银台支付（兼容模式，仅构造网址，目前请使用此方案）
-c = p.cashier_legacy(out_trade_no=OUT_TRADE_NO, total_fee=TOTAL_FEE, body=BODY)
+c = p.cashier_legacy(out_trade_no=OUT_TRADE_NO, total_fee=TOTAL_FEE, body=BODY, callback_url=CALLBACK_URL, notify_url=NOTIFY_URL, attach=ATTACH)
 print(c)
 
 # 刷卡支付
@@ -87,6 +89,10 @@ else:
     print('Error')
     print(t.return_msg)
 
+# 获取用户 OpenId
+o = p.get_openid(callback_url=CALLBACK_URL)
+print(o)
+
 # 回调验证
 n = PayJSNotify(KEY, '回调内容（str 或 dict）')
 print(n)
@@ -108,8 +114,9 @@ print(n)
 + v1.0.0 : **不向下支持** 全新发布
 + v1.1.0 : A 添加了 notify 解析支持
 + v1.1.5 : M 添加了 cashier_legacy 兼容模式
-+ v1.1.6 : A 添加了退款 
-+ v1.2.0 : A 添加了刷卡支付
++ v1.1.6 : A 添加了退款接口支持
++ v1.2.0 : A 添加了刷卡支付接口支持
++ v1.2.1 : A 添加了构造 OpenId 网址支持
 
 ## 联系我
 
