@@ -275,6 +275,50 @@ class PayJS:
 
         return url + '?' + urlencode(data)
 
+    def jsapi(self, total_fee: int, out_trade_no, openid, body: str = '', notify_url=None, attach=None):
+        """
+        发起 JSAPI 支付
+        :param total_fee: 支付金额，单位为分，介于 1 - 1000000 之间
+        :param out_trade_no: 订单号，应保证唯一性，1-32 字符
+        :param openid: 用户 OpenID，可通过调用 get_openid 获得
+        :param body: （可选）订单标题，0 - 32 字符
+        :param notify_url: （可选）回调地址，留空使用默认，传入空字符串代表无需回调
+        :param attach: （可选）用户自定义数据，在notify的时候会原样返回
+        :return:
+        """
+        url = r'https://payjs.cn/api/jsapi'
+
+        if not total_fee > 0:
+            raise InvalidInfoException(-2004, "金额必须为正整数（单位为分）")
+
+        out_trade_no = str(out_trade_no)
+
+        if not out_trade_no:
+            logger.warning("用户端订单号不可省略")
+        if not len(out_trade_no) <= 32:
+            logger.warning("用户端订单号最多为 32 位")
+
+        if not len(body) <= 32:
+            logger.warning("标题最多为 32 位")
+
+        if notify_url is None:
+            notify_url = self.notify_url
+        if not check_url(notify_url, force_ssl=self.FORCE_SSL):
+            raise InvalidInfoException(-2003, '通知回调地址有误')
+
+        data = {
+            'mchid': self.mchid,
+            'total_fee': total_fee,
+            'out_trade_no': out_trade_no,
+            'body': body,
+            'notify_url': notify_url,
+            'attach': attach,
+            'openid': openid,
+        }
+
+        ret = self.request(url, data)
+        return ret
+
     def micropay(self, total_fee: int, out_trade_no, auth_code, body: str = ''):
         """
         发起刷卡支付
@@ -390,4 +434,6 @@ class PayJS:
 
     QRPay = native
     CashierPay = cashier
+    JSPay = jsapi
+    JSApiPay = jsapi
     MicroPay = micropay
