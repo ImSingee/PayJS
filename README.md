@@ -60,8 +60,19 @@ else:
 c = p.cashier_legacy(out_trade_no=OUT_TRADE_NO, total_fee=TOTAL_FEE, body=BODY, callback_url=CALLBACK_URL, notify_url=NOTIFY_URL, attach=ATTACH)
 print(c)
 
+# JSApi 支付
+OPENID = '这里填写支付用户的 OpenID' # 支付用户在 PayJS 端的 OpenID，可通过 get_openid 获取
+j = p.JSApiPay(out_trade_no=OUT_TRADE_NO, total_fee=TOTAL_FEE, openid=OPENID, body=BODY, notify_url=NOTIFY_URL, attach=ATTACH)
+if j:
+    print(j.jsapi)   # 用于发起支付的支付参数
+else:
+    print(j.STATUS_CODE)      # HTTP 请求状态码
+    print(j.ERROR_NO)         # 错误码
+    print(j.error_msg)        # 错误信息
+    print(j)
+
 # 刷卡支付
-AUTH_CODE = '这里填写用户侧 18 位数字'
+AUTH_CODE = '这里填写用户侧 18 位数字' # 用户的支付条码或二维码所对应的数字
 m = p.MicroPay(out_trade_no=OUT_TRADE_NO, total_fee=TOTAL_FEE, auth_code=AUTH_CODE, body=BODY)
 print(m)
 
@@ -117,6 +128,7 @@ print(n)
 + v1.1.6 : A 添加了退款接口支持
 + v1.2.0 : A 添加了刷卡支付接口支持
 + v1.2.1 : A 添加了构造 OpenId 网址支持
++ v1.2.2 : A 添加了 JSAPI 支付接口支持
 
 ## 联系我
 
