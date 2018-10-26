@@ -18,7 +18,7 @@ def check_url(url=None, force_ssl=True):
     r_url = r'(xn--)?[A-Za-z0-9\.]{1,}\.([A-Za-z]{2,6}|xn--[A-Za-z0-9]{1,})'
     r_ip = r'\.'.join([r'(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|\d)'] * 4)
     r_port = r'\d{1,5}'
-    r_path = r'[A-Za-z\.\/]*'
+    r_path = r'[A-Za-z0-9\-\%\.\/]*'
 
     r = r'^(?P<protocal>{}):\/\/((?P<url>{})|(?P<ip>{}))(:(?P<port>{}))?\/(?P<path>{})$'.format(r_protocal, r_url,
                                                                                                 r_ip, r_port,
