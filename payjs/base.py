@@ -185,7 +185,9 @@ class PayJS:
         :param attach: （可选）用户自定义数据，在notify的时候会原样返回
         :return: PayJSResult
         """
-        logger.warning('此接口目前情况下使用会出问题，请使用 cashier_legacy 直接获取构造出的跳转网址')
+        raise NotImplementedError('cashier 接口暂不可用，请参考文档改为调用 get_cashier_url 接口')
+
+        logger.warning('此接口目前情况下使用会出问题，请使用 get_cashier_url 直接获取构造出的跳转网址')
         url = r'https://payjs.cn/api/cashier'
 
         if not total_fee > 0:
@@ -222,10 +224,10 @@ class PayJS:
         ret = self.request(url, data, method='gulp')
         return ret
 
-    def cashier_legacy(self, total_fee: int, out_trade_no, body: str = '', notify_url=None, callback_url=None,
-                       attach=None):
+    def get_cashier_url(self, total_fee: int, out_trade_no, body: str = '', notify_url=None, callback_url=None,
+                       attach=None, auto: bool=False, hide: bool=False):
         """
-        发起收银台支付【Legacy 临时可用】
+        发起收银台支付（仅构造参数
 
         【此接口无法判断是否请求成功会直接返回 URL 构造地址】
 
@@ -235,6 +237,8 @@ class PayJS:
         :param notify_url: （可选）回调地址，留空使用默认，传入空字符串代表无需回调
         :param callback_url: （可选）支付成功后前端跳转地址
         :param attach: （可选）用户自定义数据，在notify的时候会原样返回
+        :param auto: （可选）设置为 True 会在支付页面无需点击自动发起支付
+        :param hide: （可选）设置为 True 会隐藏界面样式
         :return: PayJSResult
         """
         url = r'https://payjs.cn/api/cashier'
@@ -267,7 +271,9 @@ class PayJS:
             'body': body,
             'notify_url': notify_url,
             'callback_url': callback_url,
-            'attach': attach
+            'attach': attach,
+            'auto': 1 if auto else 0,
+            'hide': 1 if hide else 0
         }
 
         data['sign'] = get_signature(self.key, data)
@@ -437,3 +443,4 @@ class PayJS:
     JSPay = jsapi
     JSApiPay = jsapi
     MicroPay = micropay
+    cashier_legacy = get_cashier_url

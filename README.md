@@ -1,16 +1,14 @@
 # PayJS
-A Python Package for PayJS
+A Python Package for PAYJS
 
 ## 说明
 
-本项目为 PayJS 的开源 Python SDK，**仅支持 Python 3.6 及以上版本**。
+本项目为 PAYJS 的开源 Python SDK，**仅支持 Python 3.6 及以上版本**。
 目前此项目在 Python 3.6 及以上版本测试通过，如果您发现有任何问题，欢迎给我提 Issue 或 Pull Request。
 
-使用前，您需要在 [PayJS](https://payjs.cn/ref/WDQGQD) 注册一个账号并开通商户。
+使用前，您需要在 [PAYJS](https://payjs.cn/ref/WDQGQD) 注册一个账号并开通商户。
 
 当前实现了扫码支付、收银台支付与订单查询
-
-> 以上的 **PayJS** 链接为我的 aff 链接，目前 PayJS （可能）只能通过邀请开通商户；如果介意请点此访问：[PayJS (no aff)](https://payjs.cn)
 
 ## 安装
 
@@ -21,8 +19,8 @@ $ pip install payjs
 ## 快速开始
 
 ```python
-from payjs import PayJS
-from payjs import PayJSNotify
+from payjs import PayJS # 也可根据个人习惯选择使用 Payjs/PAYJS/payjs
+from payjs import PayJSNotify # 也可根据个人习惯选择使用 PayjsNotify/PAYJSNotify
 
 MCHID = '这里是商户号'
 KEY = '这里是商户密钥'
@@ -47,17 +45,8 @@ else:
     print(r.error_msg)        # 错误信息
     print(r)
 
-# 收银台支付（暂不可用，未来可能会升级为可用）
-CALLBACK_URL = 'https://pay.singee.site/empty/' # 跳转网址
-c = p.CashierPay(out_trade_no=OUT_TRADE_NO, total_fee=TOTAL_FEE, body=BODY, callback_url=CALLBACK_URL, notify_url=NOTIFY_URL, attach=ATTACH)
-if c:
-    print(c.redirect)         # 要跳转到的收银台网址
-else:
-    print(c.error_msg)        # 错误信息
-    print(c)
-
-# 收银台支付（兼容模式，仅构造网址，目前请使用此方案）
-c = p.cashier_legacy(out_trade_no=OUT_TRADE_NO, total_fee=TOTAL_FEE, body=BODY, callback_url=CALLBACK_URL, notify_url=NOTIFY_URL, attach=ATTACH)
+# 构造收银台支付网址（仅构造链接，请使用浏览器 302 到这个网址，无法预检查调用是否成功）
+c = p.get_cashier_url(out_trade_no=OUT_TRADE_NO, total_fee=TOTAL_FEE, body=BODY, callback_url=CALLBACK_URL, notify_url=NOTIFY_URL, attach=ATTACH)
 print(c)
 
 # JSApi 支付
@@ -130,6 +119,7 @@ print(n)
 + v1.2.1 : A 添加了构造 OpenId 网址支持
 + v1.2.2 : A 添加了 JSAPI 支付接口支持
 + v1.2.4 : M 修复了网址判断正则表达式 Path 的部分 bug
++ v1.2.5 : A 添加了收银台接口对 auto 与 hide 字段的支持
 
 ## 联系我
 
